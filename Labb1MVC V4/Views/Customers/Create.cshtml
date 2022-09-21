@@ -1,0 +1,43 @@
+﻿@model Labb1MVC_V4.Models.Customer
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Customer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CustomerFName" class="control-label">First Name</label>
+                <input asp-for="CustomerFName" class="form-control" />
+                <span asp-validation-for="CustomerFName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerLName" class="control-label">Last Name</label>
+                <input asp-for="CustomerLName" class="form-control" />
+                <span asp-validation-for="CustomerLName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CustomerEmail" class="control-label">Email Adress</label>
+                <input asp-for="CustomerEmail" class="form-control" />
+                <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

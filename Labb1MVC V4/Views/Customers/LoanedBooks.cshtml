@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Labb1MVC_V4.Models.LoanedBook>
+
+
+@{
+    ViewData["Title"] = "LoanedBooks";
+}
+
+<h1>LoanedBooks</h1>
+
+<div>
+    <h4>Customer</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Customer
+                </th>
+                <th>
+                    Book Name
+                </th>
+                <th>
+                    Date of loan
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Customer.CustomerFName)
+                        @Html.DisplayFor(modelItem => item.Customer.CustomerLName)
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book.BookName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LoanDate)
+                    </td>
+                    <td>
+
+                        <a asp-action="Return" asp-route-id="@item.LoanedBookId">Return</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <a asp-action="Index">Back to List</a>
+</div>
