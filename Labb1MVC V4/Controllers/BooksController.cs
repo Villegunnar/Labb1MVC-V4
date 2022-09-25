@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Labb1MVC_V4.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Labb1MVC_V4.Controllers
 {
@@ -57,7 +58,7 @@ namespace Labb1MVC_V4.Controllers
         {
             if (ModelState.IsValid)
             {
-                book.NumberOfBooksInStock = book.NumberOfBooksInStock + 1;
+                book.NumberOfBooksInStock++;
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -66,6 +67,7 @@ namespace Labb1MVC_V4.Controllers
         }
 
         // GET: Books/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +88,7 @@ namespace Labb1MVC_V4.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("BookId,BookName,BookAuthor,Description,NumberOfBooksInStock")] Book book)
         {
             if (id != book.BookId)
@@ -117,6 +120,7 @@ namespace Labb1MVC_V4.Controllers
         }
 
         // GET: Books/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

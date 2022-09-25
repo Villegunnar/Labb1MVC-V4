@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Labb1MVC_V4.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Labb1MVC_V4.Controllers
 {
@@ -89,6 +90,7 @@ namespace Labb1MVC_V4.Controllers
         }
 
         // GET: LoanedBooks/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -111,6 +113,7 @@ namespace Labb1MVC_V4.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("LoanedBookId,BookId,CustomerId,LoanDate")] LoanedBook loanedBook)
         {
             if (id != loanedBook.LoanedBookId)
@@ -144,6 +147,7 @@ namespace Labb1MVC_V4.Controllers
         }
 
         // GET: LoanedBooks/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -155,6 +159,7 @@ namespace Labb1MVC_V4.Controllers
                 .Include(l => l.Book)
                 .Include(l => l.Customer)
                 .FirstOrDefaultAsync(m => m.LoanedBookId == id);
+
             if (loanedBook == null)
             {
                 return NotFound();
@@ -163,6 +168,7 @@ namespace Labb1MVC_V4.Controllers
             return View(loanedBook);
         }
 
+       
         public async Task<IActionResult> Return(int? id)
         {
             if (id == null)
@@ -174,11 +180,14 @@ namespace Labb1MVC_V4.Controllers
                 .Include(l => l.Book)
                 .Include(l => l.Customer)
                 .FirstOrDefaultAsync(m => m.LoanedBookId == id);
+
+           
+
             if (loanedBook == null)
             {
                 return NotFound();
             }
-
+            
             return View(loanedBook);
         }
         [HttpPost, ActionName("Return")]
@@ -187,6 +196,11 @@ namespace Labb1MVC_V4.Controllers
         {
             var loanedBook = await _context.Loan.FindAsync(id);
             _context.Loan.Remove(loanedBook);
+
+            var bookstock = _context.Books.FirstOrDefault(x => x.BookId == loanedBook.BookId);
+
+            bookstock.NumberOfBooksInStock++;
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -194,6 +208,7 @@ namespace Labb1MVC_V4.Controllers
         // POST: LoanedBooks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var loanedBook = await _context.Loan.FindAsync(id);

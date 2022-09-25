@@ -21,29 +21,35 @@
                 <th>
                     Date of loan
                 </th>
+                <th>
+                    Date of return
+                </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Customer.CustomerFName)
-                        @Html.DisplayFor(modelItem => item.Customer.CustomerLName)
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer.CustomerFName)
+                    @Html.DisplayFor(modelItem => item.Customer.CustomerLName)
 
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Book.BookName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LoanDate)
-                    </td>
-                    <td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.BookName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LoanDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReturnDate)
+                </td>
+                <td>
 
-                        <a asp-action="Return" asp-route-id="@item.LoanedBookId">Return</a>
-                    </td>
-                </tr>
+                    <a asp-action="Return" asp-route-id="@item.LoanedBookId">Return</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

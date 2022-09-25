@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Labb1MVC_V4.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Labb1MVC_V4.Controllers
 {
@@ -54,32 +55,7 @@ namespace Labb1MVC_V4.Controllers
 
             var customer = _context.Loan.Include(l => l.Book).Include(c => c.Customer).Where(l => l.Customer.CustomerId == id);
 
-            var customer1 = _context.Customers.Include(x => x.LoanedBook).Where(x => x.CustomerId == id);
-
-            //if (_context.Loan.Include(l => l.Book).Include(c => c.Customer).Where(l => l.Customer.CustomerId == id).Where(x=> x.LoanedBookId == null)
-            //{
-
-            //}
-
-
-
-
-
-
-            //var customer1 = _context.Loan.Where(l => l.CustomerId == id).Include(l => l.CustomerId);
-
-            //var customer3 = _context.Loan.Include(b => b.Book.BookName).Where(l => l.CustomerId == id);
-
-            //var customer2 = from _context. in _context.Customers
-            //                 join aSchool in _context on aStudent.SchoolID equals aSchool.Id
-            //select new
-            //{
-            //    aStudent.Id,
-            //    aStudent.Name,
-            //    aStudent.Surname,
-            //    SchoolName = aSchool.Name
-            //};
-
+           
 
             if (customer == null)
             {
@@ -115,6 +91,7 @@ namespace Labb1MVC_V4.Controllers
         }
 
         // GET: Customers/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -133,6 +110,7 @@ namespace Labb1MVC_V4.Controllers
         // POST: Customers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CustomerId,CustomerFName,CustomerLName,CustomerEmail,CustomerEmail")] Customer customer)
@@ -165,6 +143,47 @@ namespace Labb1MVC_V4.Controllers
             return View(customer);
         }
 
+        public async Task<IActionResult> Return(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var loanedBook = await _context.Loan
+                .Include(l => l.Book)
+                .Include(l => l.Customer)
+                .FirstOrDefaultAsync(m => m.LoanedBookId == id);
+          
+            if (loanedBook == null)
+            {
+                return NotFound();
+            }
+            
+            return View(loanedBook);
+        }
+        [HttpPost, ActionName("Return")]
+        [ValidateAntiForgeryToken]
+        
+        public async Task<IActionResult> ReturnConfirmed(int id)
+        {
+            var loanedBook = await _context.Loan.FindAsync(id);
+
+
+
+            
+            _context.Loan.Remove(loanedBook);
+
+            var bookstock = _context.Books.FirstOrDefault(x => x.BookId == loanedBook.BookId);
+
+            bookstock.NumberOfBooksInStock++;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [Authorize]
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -184,6 +203,7 @@ namespace Labb1MVC_V4.Controllers
         }
 
         // POST: Customers/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

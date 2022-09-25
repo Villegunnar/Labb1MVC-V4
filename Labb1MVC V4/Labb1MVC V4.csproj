@@ -26,6 +26,8 @@
 
   <ItemGroup>
     <Folder Include="Content\" />
+    <Folder Include="wwwroot\template1\css1\" />
+    <Folder Include="wwwroot\template1\js1\" />
   </ItemGroup>
 
 </Project>
